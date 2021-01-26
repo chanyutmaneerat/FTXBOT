@@ -14,6 +14,8 @@ GUI.geometry('500x500')
 GUI.title('BOT FTX')
 S_apikey = StringVar()
 S_secret = StringVar()
+S_path = StringVar()
+S_subAccount =StringVar()
 l_apikey = Label(GUI,text='API KEY',font=40)
 l_apikey.pack()
 E_apikey = Entry(GUI,textvariable=S_apikey,width=60)
@@ -22,6 +24,15 @@ l_secret = Label(GUI,text='SECRET KEY',font=40)
 l_secret.pack()
 E_secret = Entry(GUI,textvariable=S_secret,width=60)
 E_secret.pack()
+l_subaccount = Label(GUI,text='ชื่อ Sub Account  ถ้าไม่มี  ใส่ 0',font=40)
+l_subaccount.pack()
+E_subaccount = Entry(GUI,textvariable=S_subAccount,width=60)
+E_subaccount.pack()
+l_path = Label(GUI,text='Path File',font=40)
+l_path.pack()
+E_path = Entry(GUI,textvariable=S_path,width=60)
+E_path.pack()
+
 #from google.colab import drive
 #drive.mount('/content/drive')
 #%matplotlib inline
@@ -42,8 +53,12 @@ def RunProgram(event=None):
     countBar = 50
     apiKey = S_apikey.get()
     secret = S_secret.get()
+    path = S_path.get()
+    pathlog= path.replace('\ ','/')
+    path1 = S_path.get()
+    pathEXPO = path1.replace('\ ','/')
     password = "0"
-    subaccount = "scalpXRP"
+    subaccount = S_subAccount.get()
     #databaseAddress = #"drive/My Drive/BOTDATABASE"
 
     # รวมข้อมูลของ apiKey และ secret สำหรับเอาไว้เรียกใช้งาน
@@ -166,7 +181,8 @@ def RunProgram(event=None):
     # ใช้ EXCEL ในการกำหนดโซนและ MARK UP EXPOSURE ในแต่ละช่วงราคา
 
     def getmarkUpExposure():
-        dfExcelmarkUpExposure = pd.read_csv('C:/Users/Administrator/Desktop/bot/scalpXRP/EXPOSUREscalp.csv')
+   
+        dfExcelmarkUpExposure = pd.read_csv(pathEXPO + '/EXPOSUREscalp.csv')
 
         header = dfExcelmarkUpExposure.columns.values.tolist()
         body = dfExcelmarkUpExposure.values.tolist()
@@ -292,8 +308,7 @@ def RunProgram(event=None):
     def getUpdateRecord() :
 
         checkIDincsv = []
-
-        with open('C:/Users/Administrator/Desktop/bot/scalpXRP/log.csv', newline='') as f:
+        with open(pathlog + '/log.csv', newline='') as f:
             reader = csv.reader(f)
             data = list(reader)
 
@@ -306,7 +321,7 @@ def RunProgram(event=None):
     #  print("UPDATING THE RECORD PLEASE WAIT :)")
         for i in range (len(dfMyTradeList)):
             if dfMyTradeList[i][0] not in checkIDincsv :
-                with open("C:/Users/Administrator/Desktop/bot/scalpXRP/log.csv", "a+", newline='') as fp:
+                with open(pathlog + "/log.csv", "a+", newline='') as fp:
                     wr = csv.writer(fp, dialect='excel')
                     wr.writerow(dfMyTradeList[i])
                     print(dfMyTradeList[i][0],dfMyTradeList[i][2],dfMyTradeList[i][3],dfMyTradeList[i][4],dfMyTradeList[i][5],dfMyTradeList[i][6])
@@ -465,6 +480,6 @@ def RunProgram(event=None):
 
 submit = Button(GUI,text='SUBMIT',command=RunProgram)
 submit.pack()
-E_secret.bind('<Return>',RunProgram)
+E_path.bind('<Return>',RunProgram)
 
 GUI.mainloop()

@@ -16,6 +16,7 @@ S_apikey = StringVar()
 S_secret = StringVar()
 S_path = StringVar()
 S_subAccount =StringVar()
+S_pair = StringVar()
 l_apikey = Label(GUI,text='API KEY',font=40)
 l_apikey.pack()
 E_apikey = Entry(GUI,textvariable=S_apikey,width=60)
@@ -28,9 +29,13 @@ l_subaccount = Label(GUI,text='ชื่อ Sub Account  ถ้าไม่ม�
 l_subaccount.pack()
 E_subaccount = Entry(GUI,textvariable=S_subAccount,width=60)
 E_subaccount.pack()
+l_pair = Label(GUI,text='symbol',font=40)
+l_pair.pack()
+E_pair = Entry(GUI,textvariable=S_pair,width=30,bd=5)
+E_pair.pack()
 l_path = Label(GUI,text='Path File',font=40)
 l_path.pack()
-E_path = Entry(GUI,textvariable=S_path,width=60)
+E_path = Entry(GUI,textvariable=S_path,width=60,bd=5)
 E_path.pack()
 
 #from google.colab import drive
@@ -45,7 +50,7 @@ def RunProgram(event=None):
     koi = 0 ##ลูบของพาย
 
     # กำหนด PARAMETER ที่จำเป็น
-    pair = "XRP-PERP"
+    pair = S_pair.get()
     timestampRecordUltil = 1592442000
     maxExposure = 200
     MIN_TPRANGE = 0.001
@@ -60,10 +65,10 @@ def RunProgram(event=None):
     password = "0"
     subaccount = S_subAccount.get()
     #databaseAddress = #"drive/My Drive/BOTDATABASE"
-
+    
     # รวมข้อมูลของ apiKey และ secret สำหรับเอาไว้เรียกใช้งาน
     #exchange = ccxt.deribit({'apiKey': apiKey ,'secret': secret,'enableRateLimit': True,"urls": {"api": "https://test.deribit.com"}}) #สำหรับใช้งาน deribit
-
+        
     exchange = ccxt.ftx({
         'apiKey' : apiKey ,'secret' : secret  ,
         'password' : password, 
@@ -88,7 +93,7 @@ def RunProgram(event=None):
     # ใช้ json ในการดึงข้อมูลราคา PRODUCT ที่เราสนใจจะเทรด
 
     def getjsonPrice() :
-        r1 = json.dumps(exchange.fetch_ticker('XRP-PERP'))
+        r1 = json.dumps(exchange.fetch_ticker(pair))
         dataPriceBTC = json.loads(r1)
         jsonPrice = dataPriceBTC['last']
         print('XRP-PERP=',jsonPrice,'XRP')
@@ -478,8 +483,8 @@ def RunProgram(event=None):
     print(sumExposure)
 '''
 
-submit = Button(GUI,text='SUBMIT',command=RunProgram)
-submit.pack()
+submit = Button(GUI,text='SUBMIT',command=RunProgram,bg='blue',fg='white',font=60)
+submit.pack(ipadx=40,ipady=20,pady=40)
 E_path.bind('<Return>',RunProgram)
 
 GUI.mainloop()
